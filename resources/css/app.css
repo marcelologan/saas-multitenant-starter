@@ -1,0 +1,71 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Importar temas */
+@import './themes/themes.css';
+@import './auth/auth.css';
+@import './welcome/welcome.css';
+@import './dashboard/dashboard.css';
+
+/* ... resto do arquivo ... */
+/* Fontes */
+@import url('https://fonts.bunny.net/css?family=inter:400,500,600,700,800');
+
+/* Base styles */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Componentes */
+@layer components {
+    .btn-gradient {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-block;
+        text-decoration: none;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+    
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .navbar-glass {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* Utilities */
+@layer utilities {
+    .bg-gradient-primary {
+        background: var(--gradient-primary);
+    }
+    
+    .text-primary {
+        color: var(--primary);
+    }
+    
+    .border-primary {
+        border-color: var(--primary);
+    }
+}

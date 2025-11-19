@@ -1,0 +1,74 @@
+/* Estilos específicos para autenticação */
+.auth-container {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--light) 100%);
+    min-height: 100vh;
+}
+
+.auth-card {
+    background: white;
+    border: 1px solid var(--light);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.auth-card:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.auth-input {
+    border: 2px solid var(--light);
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.auth-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
+    outline: none;
+}
+
+.auth-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.auth-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+}
+
+.auth-link {
+    color: var(--primary);
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: var(--primary-hover);
+}
+
+/* Dark mode para auth */
+@media (prefers-color-scheme: dark) {
+    .auth-container {
+        background: linear-gradient(135deg, var(--dark) 0%, #2c3e50 100%);
+    }
+    
+    .auth-card {
+        background: #34495e;
+        border-color: var(--dark);
+        color: white;
+    }
+    
+    .auth-input {
+        background: #2c3e50;
+        border-color: var(--dark);
+        color: white;
+    }
+    
+    .auth-input::placeholder {
+        color: var(--light);
+    }
+}

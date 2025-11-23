@@ -13,9 +13,25 @@
                 <div class="text-sm text-gray-500">
                     Última atualização: {{ $user->updated_at->format('d/m/Y H:i') }}
                 </div>
-                @if($user->isAdmin())
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        Administrador
+                @php
+                    $userRole = $user->activeRoles->first();
+                @endphp
+                @if ($userRole)
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium 
+            {{ $userRole->slug === 'admin-empresa'
+                ? 'bg-blue-100 text-blue-800'
+                : ($userRole->slug === 'gerente'
+                    ? 'bg-green-100 text-green-800'
+                    : ($userRole->slug === 'funcionario'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-gray-100 text-gray-800')) }}">
+                        {{ $userRole->name }}
+                    </span>
+                @else
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        Sem função definida
                     </span>
                 @endif
             </div>
@@ -24,7 +40,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
+
             <!-- Informações do Usuário -->
             <div class="bg-white overflow-hidden shadow-lg rounded-2xl border border-gray-200">
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -37,7 +53,7 @@
             </div>
 
             <!-- Dados da Empresa (apenas para Admin) -->
-            @if($user->isAdmin())
+            @if ($user->isAdmin())
                 <div class="bg-white overflow-hidden shadow-lg rounded-2xl border border-gray-200">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">Dados da Empresa</h3>

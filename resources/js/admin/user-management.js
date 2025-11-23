@@ -7,7 +7,7 @@ export function userManagement() {
     return {
         // Create Modal
         showCreateModal: false,
-        
+
         // Edit Modal
         showEditModal: false,
         editUserId: null,
@@ -16,7 +16,7 @@ export function userManagement() {
         editUserPhone: '',
         editUserRole: '',
         editUserStatus: '',
-        
+
         // Delete Modal
         showDeleteModal: false,
         deleteUserId: null,
@@ -56,7 +56,7 @@ export function userManagement() {
             this.editUserRole = role;
             this.editUserStatus = status;
             this.showEditModal = true;
-            
+
             // Focus no primeiro campo após o modal abrir
             this.$nextTick(() => {
                 this.$refs.editNameInput?.focus();
@@ -117,21 +117,21 @@ export function userManagement() {
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = `/admin/users/${this.deleteUserId}`;
-                
+
                 // CSRF Token
                 const csrfInput = document.createElement('input');
                 csrfInput.type = 'hidden';
                 csrfInput.name = '_token';
                 csrfInput.value = document.querySelector('meta[name="csrf-token"]').content;
                 form.appendChild(csrfInput);
-                
+
                 // Method DELETE
                 const methodInput = document.createElement('input');
                 methodInput.type = 'hidden';
                 methodInput.name = '_method';
                 methodInput.value = 'DELETE';
                 form.appendChild(methodInput);
-                
+
                 document.body.appendChild(form);
                 form.submit();
             }
@@ -160,5 +160,57 @@ export function userManagement() {
     }
 }
 
+// No final do arquivo user-management.js, adicionar:
+
+// Função principal que combina user, role e permission management
+window.adminSettings = function () {
+    return {
+        // Verificar URL para definir aba inicial
+        activeTab: (() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('tab') || 'users';
+        })(),
+
+        // Combinar funcionalidades
+        ...userManagement(),
+        ...roleManagement(),
+        ...permissionManagement(), // ← ESTA LINHA DEVE EXISTIR
+
+        setActiveTab(tab) {
+            this.activeTab = tab;
+            // Atualizar URL sem recarregar
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tab);
+            window.history.replaceState({}, '', url);
+        },
+
+        init() {
+            // Escutar mudanças na URL
+            window.addEventListener('popstate', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                this.activeTab = urlParams.get('tab') || 'users';
+            });
+
+            // Inicializar funcionalidades específicas se existirem
+            if (typeof this.initPermissions === 'function') {
+                this.initPermissions();
+            }
+        }
+    }
+}
+
+// Função global para manter aba ativa após reload
+window.maintainActiveTab = function (tab = 'permissions') {
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tab);
+    window.history.replaceState({}, '', url);
+}
+
+// Função global para manter aba ativa após reload
+window.maintainActiveTab = function (tab = 'roles') {
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tab);
+    window.history.replaceState({}, '', url);
+}
 // Disponibilizar globalmente para Alpine.js
 window.userManagement = userManagement;

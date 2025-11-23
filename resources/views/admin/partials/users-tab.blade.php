@@ -58,23 +58,27 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-        {{ $user->role === 'admin-empresa'
-            ? 'bg-purple-100 text-purple-800'
-            : ($user->role === 'gerente'
-                ? 'bg-blue-100 text-blue-800'
-                : ($user->role === 'funcionario'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-gray-100 text-gray-800')) }}">
-                                {{ $user->role === 'admin-empresa'
-                                    ? 'Admin Empresa'
-                                    : ($user->role === 'gerente'
-                                        ? 'Gerente'
-                                        : ($user->role === 'funcionario'
-                                            ? 'Funcionário'
-                                            : 'Cliente')) }}
-                            </span>
+                            @php
+                                $userRole = $user->activeRoles->first();
+                            @endphp
+                            @if ($userRole)
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+            {{ $userRole->slug === 'admin-empresa'
+                ? 'bg-purple-100 text-purple-800'
+                : ($userRole->slug === 'gerente'
+                    ? 'bg-blue-100 text-blue-800'
+                    : ($userRole->slug === 'funcionario'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800')) }}">
+                                    {{ $userRole->name }}
+                                </span>
+                            @else
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Sem Role
+                                </span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if ($user->status === 'active')
@@ -106,14 +110,13 @@
                             <div class="flex items-center justify-end space-x-2">
                                 <button
                                     @click="openEditModal(
-    '{{ $user->id }}', 
-    '{{ addslashes($user->name) }}', 
-    '{{ $user->email }}', 
-    '{{ $user->phone }}', 
-    '{{ $user->role }}', 
-    '{{ $user->status }}'
-)"
-                                    ...>
+        '{{ $user->id }}', 
+        '{{ addslashes($user->name) }}', 
+        '{{ $user->email }}', 
+        '{{ $user->phone }}', 
+        '{{ $user->activeRoles->first()?->slug ?? '' }}', 
+        '{{ $user->status }}'
+    )"
                                     class="text-indigo-600 hover:text-indigo-900 p-1 rounded" title="Editar">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -63,31 +65,43 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // ✅ NOVA ROTA: Atualizar dados da empresa (apenas admin pode usar)
+    // Atualizar dados da empresa
     Route::patch('/tenant', [TenantController::class, 'update'])->name('tenant.update');
 
-    // ✅ NOVAS ROTAS ADMINISTRATIVAS (apenas admin)
-    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/settings', [\App\Http\Controllers\Admin\AdminController::class, 'settings'])->name('settings');
-        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-    });
-
-    // Rotas de usuários (admin)
+    // ✅ ROTAS ADMINISTRATIVAS COM UUID PATTERN
     Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+        // Configurações gerais
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
-        Route::resource('users', UserController::class)->except(['index', 'show']);
-    });
 
-    // Rotas de usuários (admin)
-    Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+        // Gestão de usuários
         Route::resource('users', UserController::class)->except(['index', 'show']);
-        Route::get('/users/{user}/data', [UserController::class, 'getUserData'])->name('users.data');
-    });
+        Route::get('/users/{user}/data', [UserController::class, 'getUserData'])
+            ->name('users.data')
+            ->where('user', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
 
-    // Adicione temporariamente no web.php para testar
-    Route::middleware(['auth', 'admin'])->get('/test-admin', function () {
-        return 'Você é admin! 🎉';
+        // Gestão de roles
+        Route::resource('roles', RoleController::class)->except(['index', 'show', 'create', 'edit']);
+        Route::get('roles/{role}/permissions', [RoleController::class, 'getPermissions'])
+            ->name('roles.permissions')
+            ->where('role', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+        Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])
+            ->name('roles.permissions.update')
+            ->where('role', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+
+        // ✅ GESTÃO DE PERMISSÕES COM UUID PATTERN
+        Route::post('permissions', [PermissionController::class, 'store'])->name('permissions.store');
+        Route::put('permissions/{permission}', [PermissionController::class, 'update'])
+            ->name('permissions.update')
+            ->where('permission', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+        Route::delete('permissions/{permission}', [PermissionController::class, 'destroy'])
+            ->name('permissions.destroy')
+            ->where('permission', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+
+        // ✅ ADICIONAR UUID PATTERN PARA ROLES E USERS TAMBÉM
+        Route::resource('roles', RoleController::class)->except(['index', 'show', 'create', 'edit'])
+            ->where(['role' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}']);
+        Route::resource('users', UserController::class)->except(['index', 'show'])
+            ->where(['user' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}']);
     });
 });
 

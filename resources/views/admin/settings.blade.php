@@ -3,15 +3,15 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="font-bold text-2xl text-gray-900 leading-tight flex items-center space-x-2">
-    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-        </path>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-    </svg>
-    <span>Configurações da Empresa</span>
-</h2>
+                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Configurações da Empresa</span>
+                </h2>
                 <p class="mt-1 text-sm text-gray-600">
                     Gerencie usuários, funções e permissões da sua empresa
                 </p>
@@ -48,7 +48,7 @@
 
             <!-- Tabs Container -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div x-data="{ activeTab: 'users' }" class="min-h-screen">
+                <div x-data="adminSettings()" class="min-h-screen">
                     <!-- Tab Navigation -->
                     <div class="border-b border-gray-200 bg-gray-50">
                         <nav class="flex space-x-8 px-6" aria-label="Tabs">
@@ -84,7 +84,7 @@
                                 <span
                                     :class="activeTab === 'roles' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'"
                                     class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded-full">
-                                    3
+                                    {{ $roles->count() }}
                                 </span>
                             </button>
 
@@ -102,7 +102,7 @@
                                 <span
                                     :class="activeTab === 'permissions' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'"
                                     class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded-full">
-                                    Em breve
+                                    {{ $permissions->flatten()->count() }}
                                 </span>
                             </button>
                         </nav>

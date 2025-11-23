@@ -4,28 +4,38 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    /**
-     * Painel de configurações administrativas
-     */
     public function settings(Request $request)
     {
-        $users = User::where('tenant_id', $request->user()->tenant_id)
-                    ->with('tenant')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+        $tenantId = $request->user()->tenant_id;
 
-        // Roles hardcoded por enquanto
-        $roles = collect([
-            (object)['slug' => 'admin-empresa', 'name' => 'Admin Empresa'],
-            (object)['slug' => 'gerente', 'name' => 'Gerente'],
-            (object)['slug' => 'funcionario', 'name' => 'Funcionário'],
-            (object)['slug' => 'cliente', 'name' => 'Cliente'],
-        ]);
+        // Carregar usuários
+        $users = User::byTenant($tenantId)
+            ->with(['userRoles.role'])
+            ->orderBy('name')
+            ->get();
 
-        return view('admin.settings', compact('users', 'roles'));
+        // Carregar roles
+        $roles = Role::byTenant($tenantId)
+            ->with(['rolePermissions.permission', 'users'])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        // Carregar permissões agrupadas
+        $permissions = Permission::byTenant($tenantId)
+            ->active()
+            ->orderBy('group')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('group');
+
+        return view('admin.settings', compact('users', 'roles', 'permissions'));
     }
 }

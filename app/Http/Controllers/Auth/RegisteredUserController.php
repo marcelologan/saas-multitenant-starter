@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Tenant;
 use App\Models\Plan;
 use App\Models\Subscription;
+use App\Models\Role; // ✅ ADICIONAR
+use App\Models\UserRole; // ✅ ADICIONAR
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Arr; // ✅ ADICIONAR ESTA LINHA
+use Illuminate\Support\Arr;
 use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
@@ -63,7 +65,6 @@ class RegisteredUserController extends Controller
                 // Termos
                 'terms' => ['required', 'accepted'],
             ], [
-                // Suas mensagens customizadas...
                 'company_name.required' => 'A razão social é obrigatória.',
                 'cnpj.required' => 'O CNPJ é obrigatório.',
                 'cnpj.size' => 'O CNPJ deve ter 18 caracteres (formato: 00.000.000/0000-00).',
@@ -78,7 +79,7 @@ class RegisteredUserController extends Controller
             $validatedForLog = $validated;
             unset($validatedForLog['password']);
             Log::info('Validação passou! Dados validados:', $validatedForLog);
-            
+
             // Usar transação para garantir consistência
             DB::beginTransaction();
             Log::info('Transação iniciada');
@@ -98,13 +99,35 @@ class RegisteredUserController extends Controller
                 'tenant_id' => $tenant->id,
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => $validated['password'], // ✅ SEM Hash::make
+                'password' => $validated['password'],
                 'phone' => $this->cleanPhone($validated['phone']),
                 'role' => 'admin',
                 'status' => 'active',
                 'email_verified_at' => now(),
             ]);
             Log::info('User criado:', ['id' => $user->id, 'email' => $user->email]);
+
+            // ✅ 2.1. ATRIBUIR ROLE DE ADMIN-EMPRESA
+            $adminRole = Role::where('slug', 'admin-empresa')->first();
+
+            if ($adminRole) {
+                UserRole::create([
+                    'user_id' => $user->id,
+                    'tenant_id' => $tenant->id,
+                    'role_id' => $adminRole->id,
+                    'assigned_at' => now(),
+                    'assigned_by' => $user->id,
+                    'is_active' => true,
+                ]);
+                Log::info('Role admin-empresa atribuída ao usuário', [
+                    'user_id' => $user->id,
+                    'role_id' => $adminRole->id,
+                    'role_name' => $adminRole->name
+                ]);
+            } else {
+                Log::error('Role admin-empresa não encontrada no banco!');
+                throw new \Exception('Role admin-empresa não encontrada');
+            }
 
             // 3. Buscar o plano selecionado
             $plan = Plan::findOrFail($validated['plan_id']);

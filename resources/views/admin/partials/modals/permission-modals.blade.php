@@ -42,6 +42,7 @@
                             Permissão</label>
                         <input type="text" id="create_permission_name" name="name"
                             x-ref="createPermissionNameInput"
+                            x-model="createPermissionName"
                             class="mt-1 block w-full px-3 py-2 border border-font/20 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-light text-font"
                             placeholder="Ex: Visualizar relatórios" required>
                     </div>
@@ -49,9 +50,24 @@
                     <!-- Slug -->
                     <div>
                         <label for="create_permission_slug" class="block text-sm font-medium text-font">Slug</label>
-                        <input type="text" id="create_permission_slug" name="slug"
-                            class="mt-1 block w-full px-3 py-2 border border-font/20 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-light text-font"
-                            placeholder="Ex: reports.view" pattern="[a-z0-9._-]+" required>
+                        <div class="space-y-2">
+                            <input type="text" id="create_permission_slug" name="slug"
+                                x-model="createPermissionSlug"
+                                 x-bind:disabled="!isCreateSlugEditable"
+                                x-bind:class="{
+                                    'bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200': !isCreateSlugEditable,
+                                    'bg-light text-font border-font/20 focus:ring-primary focus:border-primary': isCreateSlugEditable
+                                }"
+                                class="mt-1 block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none transition-colors"
+                                placeholder="Ex: reports.view" pattern="[a-z0-9._-]+" required>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="create_permission_slug_edit_toggle" x-model="isCreateSlugEditable"
+                                    class="h-4 w-4 text-primary focus:ring-primary border-font/30 rounded">
+                                <label for="create_permission_slug_edit_toggle" class="ml-2 text-sm text-font cursor-pointer">
+                                    Permitir edição manual do slug
+                                </label>
+                            </div>
+                        </div>
                         <p class="mt-1 text-xs text-font/50">Use apenas letras minúsculas, números, pontos, hífens e
                             underscores</p>
                     </div>

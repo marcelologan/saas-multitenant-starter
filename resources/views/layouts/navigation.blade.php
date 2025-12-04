@@ -100,7 +100,7 @@
                         </x-dropdown-link>
 
                         <!-- Configurações (apenas admin) -->
-                        @if (Auth::user()->isAdmin())
+                        @if (Auth::user()->hasPermission('settings.manage'))
                             <x-dropdown-link :href="route('admin.settings')" class="flex items-center space-x-2">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">

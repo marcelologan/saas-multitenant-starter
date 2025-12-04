@@ -10,11 +10,21 @@ class EnsureUserIsAdmin
 {
     /**
      * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $permission = 'settings.manage'): Response
     {
-        if (!$request->user() || !$request->user()->hasRole('admin-empresa')) {
-            abort(403, 'Acesso negado. Apenas administradores podem acessar esta área.');
+        $user = $request->user();
+
+        // Verificar se o usuário está autenticado
+        if (!$user) {
+            abort(403, 'Acesso negado. Você precisa estar logado.');
+        }
+
+        // Verificar se o usuário tem a permissão necessária
+        if (!$user->hasPermission($permission)) {
+            abort(403, 'Acesso negado. Você não tem permissão para acessar esta área.');
         }
 
         return $next($request);

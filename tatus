@@ -1,0 +1,162 @@
+warning: in the working copy of 'resources/js/admin/permission-management.js', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'resources/views/admin/partials/modals/permission-modals.blade.php', CRLF will be replaced by LF the next time Git touches it
+[1mdiff --git a/README.md b/README.md[m
+[1mindex 71174df..39ed43b 100644[m
+Binary files a/README.md and b/README.md differ
+[1mdiff --git a/app/Http/Controllers/Auth/RegisteredUserController.php b/app/Http/Controllers/Auth/RegisteredUserController.php[m
+[1mindex cc9b062..aed6e48 100644[m
+[1m--- a/app/Http/Controllers/Auth/RegisteredUserController.php[m
+[1m+++ b/app/Http/Controllers/Auth/RegisteredUserController.php[m
+[36m@@ -9,6 +9,8 @@[m
+ use App\Models\Subscription;[m
+ use App\Models\Role; // ✅ ADICIONAR[m
+ use App\Models\UserRole; // ✅ ADICIONAR[m
+[32m+[m[32muse App\Models\Permission; // ✅ ADICIONAR[m
+[32m+[m[32muse App\Models\RolePermission; // ✅ ADICIONAR[m
+ use Illuminate\Auth\Events\Registered;[m
+ use Illuminate\Http\RedirectResponse;[m
+ use Illuminate\Http\Request;[m
+[36m@@ -35,15 +37,18 @@[m [mpublic function create(): View[m
+ [m
+     /**[m
+      * Handle an incoming registration request.[m
+[32m+[m[32m     *[m[41m [m
+[32m+[m[32m     * Este método:[m
+[32m+[m[32m     * 1. Cria a empresa (tenant)[m
+[32m+[m[32m     * 2. Cria as roles e permissões padrão para a empresa[m
+[32m+[m[32m     * 3. Cria o usuário administrador da empresa[m
+[32m+[m[32m     * 4. Atribui a role de admin-empresa ao usuário[m
+[32m+[m[32m     * 5. Cria a assinatura do plano[m
+      *[m
+      * @throws \Illuminate\Validation\ValidationException[m
+      */[m
+     public function store(Request $request): RedirectResponse[m
+     {[m
+[31m-        // Log dos dados recebidos[m
+[31m-        Log::info('=== INÍCIO DO REGISTRO ===');[m
+[31m-        Log::info('Dados recebidos:', $request->except(['password', 'password_confirmation']));[m
+[31m-[m
+         try {[m
+             // Validação completa dos dados[m
+             $validated = $request->validate([[m
+[36m@@ -76,13 +81,8 @@[m [mpublic function store(Request $request): RedirectResponse[m
+                 'terms.accepted' => 'Você deve aceitar os termos de uso.',[m
+             ]);[m
+ [m
+[31m-            $validatedForLog = $validated;[m
+[31m-            unset($validatedForLog['password']);[m
+[31m-            Log::info('Validação passou! Dados validados:', $validatedForLog);[m
+[31m-[m
+             // Usar transação para garantir consistência[m
+             DB::beginTransaction();[m
+[31m-            Log::info('Transação iniciada');[m
+ [m
+             // 1. Criar o Tenant (Empresa)[m
+             $tenant = Tenant::create([[m
+[36m@@ -92,23 +92,27 @@[m [mpublic function store(Request $request): RedirectResponse[m
+                 'address' => $validated['address'],[m
+                 'status' => 'active',[m
+             ]);[m
+[31m-            Log::info('Tenant criado:', ['id' => $tenant->id, 'company_name' => $tenant->company_name]);[m
+ [m
+[31m-            // 2. Criar o usuário administrador[m
+[32m+[m[32m            // 2. Criar roles e permissões para a empresa[m
+[32m+[m[32m            $this->createTenantRoles($tenant->id);[m
+[32m+[m[32m            $this->createTenantPermissions($tenant->id);[m
+[32m+[m[32m            $this->assignPermissionsToRoles($tenant->id);[m
+[32m+[m
+[32m+[m[32m            // 3. Criar o usuário administrador[m
+             $user = User::create([[m
+                 'tenant_id' => $tenant->id,[m
+                 'name' => $validated['name'],[m
+                 'email' => $validated['email'],[m
+                 'password' => $validated['password'],[m
+                 'phone' => $this->cleanPhone($validated['phone']),[m
+[31m-                'role' => 'admin',[m
+                 'status' => 'active',[m
+                 'email_verified_at' => now(),[m
+             ]);[m
+[31m-            Log::info('User criado:', ['id' => $user->id, 'email' => $user->email]);[m
+ [m
+[31m-            // ✅ 2.1. ATRIBUIR ROLE DE ADMIN-EMPRESA[m
+[31m-            $adminRole = Role::where('slug', 'admin-empresa')->first();[m
+[32m+[m[32m            // 4. Atribuir role de admin-empresa ao usuário[m
+[32m+[m[32m            $adminRole = Role::where('tenant_id', $tenant->id)[m
+[32m+[m[32m                ->where('slug', 'admin-empresa')[m
+[32m+[m[32m                ->first();[m
+ [m
+             if ($adminRole) {[m
+                 UserRole::create([[m
+[36m@@ -119,21 +123,12 @@[m [mpublic function store(Request $request): RedirectResponse[m
+                     'assigned_by' => $user->id,[m
+                     'is_active' => true,[m
+                 ]);[m
+[31m-                Log::info('Role admin-empresa atribuída ao usuário', [[m
+[31m-                    'user_id' => $user->id,[m
+[31m-                    'role_id' => $adminRole->id,[m
+[31m-                    'role_name' => $adminRole->name[m
+[31m-                ]);[m
+[31m-            } else {[m
+[31m-                Log::error('Role admin-empresa não encontrada no banco!');[m
+[31m-                throw new \Exception('Role admin-empresa não encontrada');[m
+             }[m
+ [m
+[31m-            // 3. Buscar o plano selecionado[m
+[32m+[m[32m            // 5. Buscar o plano selecionado[m
+             $plan = Plan::findOrFail($validated['plan_id']);[m
+[31m-            Log::info('Plano encontrado:', ['id' => $plan->id, 'name' => $plan->name]);[m
+ [m
+[31m-            // 4. Criar a assinatura[m
+[32m+[m[32m            // 6. Criar a assinatura[m
+             $subscription = Subscription::create([[m
+                 'tenant_id' => $tenant->id,[m
+                 'plan_id' => $plan->id,[m
+[36m@@ -142,21 +137,15 @@[m [mpublic function store(Request $request): RedirectResponse[m
+                 'trial_ends_at' => now()->addDays(30),[m
+                 'ends_at' => null,[m
+             ]);[m
+[31m-            Log::info('Subscription criada:', ['id' => $subscription->id, 'status' => $subscription->status]);[m
+ [m
+             // Confirmar transação[m
+             DB::commit();[m
+[31m-            Log::info('Transação confirmada');[m
+ [m
+             // Disparar evento de registro[m
+             event(new Registered($user));[m
+[31m-            Log::info('Evento Registered disparado');[m
+ [m
+             // Fazer login automático[m
+             Auth::login($user);[m
+[31m-            Log::info('Login automático realizado');[m
+[31m-[m
+[31m-            Log::info('=== REGISTRO CONCLUÍDO COM SUCESSO ===');[m
+ [m
+             // Redirecionar para dashboard com mensagem de sucesso[m
+             return redirect()->route('dashboard')->with([[m
+[36m@@ -165,8 +154,6 @@[m [mpublic function store(Request $request): RedirectResponse[m
+                 'plan_name' => $plan->name,[m
+             ]);[m
+         } catch (\Illuminate\Validation\ValidationException $e) {[m
+[31m-            Log::error('Erro de validação:', $e->errors());[m
+[31m-[m
+             return back()->withErrors($e->errors())[m
+                 ->withInput($request->except(['password', 'password_confirmation']))[m
+                 ->with('error', 'Verifique os campos obrigatórios.');[m
+[36m@@ -174,18 +161,170 @@[m [mpublic function store(Request $request): RedirectResponse[m
+             // Reverter transação em caso de erro[m
+             DB::rollBack();[m
+ [m
+[31m-            Log::error('Erro geral no registro:', [[m
+[31m-                'message' => $e->getMessage(),[m
+[31m-                'file' => $e->getFile(),[m
+[31m-                'line' => $e->getLine(),[m
+[31m-                'trace' => $e->getTraceAsString()[m
+[31m-            ]);[m
+[31m-[m
+             return back()->withInput($request->except(['password', 'password_confirmation']))[m
+                 ->with('error', 'Erro ao criar conta. Verifique os dados e tente novamente.');[m
+         }[m
+     }[m
+ [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Criar roles padrão pa

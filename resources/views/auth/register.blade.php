@@ -1,4 +1,21 @@
 <x-guest-layout>
+    <!-- ADICIONAR NO TOPO DA VIEW REGISTER -->
+    @if ($errors->any())
+        <div class="bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded mb-4">
+            <h4 class="font-bold">Erros encontrados:</h4>
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="min-h-screen bg-gray-50">
         <!-- Header Corrigido -->
         <div class="bg-white shadow-sm border-b border-gray-200">
@@ -392,6 +409,28 @@
             if (scrollPercent > 60) {
                 // Ativar step 3
                 document.querySelector('.step-3').classList.add('active');
+            }
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se há erros de elementos JS
+            console.log('=== DEBUG REGISTER PAGE ===');
+
+            // Verificar se todos os elementos críticos existem
+            const form = document.querySelector('form');
+            const submitBtn = document.querySelector('button[type="submit"]');
+            const planInputs = document.querySelectorAll('input[name="plan_id"]');
+
+            console.log('Form encontrado:', !!form);
+            console.log('Submit button encontrado:', !!submitBtn);
+            console.log('Plan inputs encontrados:', planInputs.length);
+
+            // Prevenir erro de classList
+            try {
+                // Qualquer código que use classList aqui
+            } catch (error) {
+                console.error('Erro JS capturado:', error);
             }
         });
     </script>

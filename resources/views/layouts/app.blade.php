@@ -12,17 +12,22 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- Theme CSS Variables -->
+    <style>
+        {!! $themeCss ?? \App\Helpers\ThemeHelper::generateCssVariables() !!}
+    </style>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/css/themes/themes.css', 'resources/js/app.js', 'resources/js/themes/theme-switcher.js'])
 </head>
 
-<body class="font-sans antialiased bg-secondary">
+<body class="font-sans antialiased bg-bg">
     <div class="min-h-screen">
         @include('layouts.navigation')
 
         <!-- Page Heading -->
         @isset($header)
-            <header class="bg-white shadow border-b border-light">
+            <header class="bg-light shadow border-b border-font/10">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
@@ -30,50 +35,38 @@
         @endisset
 
         <!-- Page Content -->
-        <main class="bg-secondary min-h-screen">
+        <main class="bg-bg min-h-screen">
             {{ $slot }}
         </main>
     </div>
 
     <!-- Theme Switcher Modal -->
-    <div id="theme-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="closeThemeModal()">
+    <div id="theme-modal" class="fixed inset-0 bg-dark/50 hidden z-50" onclick="closeThemeModal()">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg p-6 max-w-md w-full" onclick="event.stopPropagation()">
-                <h3 class="text-lg font-semibold text-dark mb-4">Escolher Tema</h3>
+            <div class="bg-light rounded-lg p-6 max-w-md w-full" onclick="event.stopPropagation()">
+                <h3 class="text-lg font-semibold text-font mb-4">Escolher Tema</h3>
                 <div class="space-y-3">
-                    <button onclick="switchTheme('flat-ui')"
-                        class="w-full text-left p-3 rounded-md border border-light hover:bg-light transition-colors">
+                    <button onclick="switchTheme('textil')"
+                        class="w-full text-left p-3 rounded-md border border-font/20 hover:bg-bg transition-colors">
                         <div class="flex items-center space-x-3">
-                            <div class="w-4 h-4 rounded-full" style="background: #9b59b6;"></div>
-                            <span class="font-medium">Flat UI</span>
+                            <div class="w-4 h-4 rounded-full bg-primary"></div>
+                            <span class="font-medium text-font">Têxtil (Padrão)</span>
                         </div>
                     </button>
-                    <button onclick="switchTheme('russian')"
-                        class="w-full text-left p-3 rounded-md border border-light hover:bg-light transition-colors">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-4 h-4 rounded-full" style="background: #e77f67;"></div>
-                            <span class="font-medium">Russian</span>
-                        </div>
-                    </button>
-                    <button onclick="switchTheme('german')"
-                        class="w-full text-left p-3 rounded-md border border-light hover:bg-light transition-colors">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-4 h-4 rounded-full" style="background: #45aaf2;"></div>
-                            <span class="font-medium">German</span>
-                        </div>
-                    </button>
+                    <!-- Adicione outros temas aqui quando necessário -->
                 </div>
-                <button onclick="closeThemeModal()" class="mt-4 w-full btn btn-secondary">
+                <button onclick="closeThemeModal()"
+                    class="mt-4 w-full bg-secondary text-light py-2 px-4 rounded-lg hover:bg-secondary-hover transition-colors">
                     Fechar
                 </button>
             </div>
         </div>
     </div>
-    <!-- Flash Messages -->
+
     <!-- Flash Messages -->
     @if (session('success'))
         <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
-            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-8 py-4 rounded-lg shadow-xl border-l-4 border-green-600 min-w-96">
+            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-success text-light px-8 py-4 rounded-lg shadow-xl border-l-4 border-success-hover min-w-96">
             <div class="flex items-center space-x-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -85,7 +78,7 @@
 
     @if (session('error'))
         <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
-            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-red-500 text-white px-8 py-4 rounded-lg shadow-xl border-l-4 border-red-600 min-w-96">
+            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-danger text-light px-8 py-4 rounded-lg shadow-xl border-l-4 border-danger-hover min-w-96">
             <div class="flex items-center space-x-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
@@ -98,7 +91,7 @@
 
     @if (session('warning'))
         <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
-            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-yellow-500 text-white px-8 py-4 rounded-lg shadow-xl border-l-4 border-yellow-600 min-w-96">
+            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-warning text-light px-8 py-4 rounded-lg shadow-xl border-l-4 border-warning-hover min-w-96">
             <div class="flex items-center space-x-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="font-bold text-2xl text-gray-900 leading-tight flex items-center space-x-2">
+                <h2 class="font-bold text-2xl text-font leading-tight flex items-center space-x-2">
                     <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
@@ -12,23 +12,24 @@
                     </svg>
                     <span>Configurações da Empresa</span>
                 </h2>
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="mt-1 text-sm text-font/60">
                     Gerencie usuários, funções e permissões da sua empresa
                 </p>
             </div>
             <div class="text-right">
-                <div class="text-sm font-medium text-gray-900">{{ auth()->user()->tenant->trade_name }}</div>
-                <div class="text-xs text-gray-500">Última atualização: {{ now()->format('d/m/Y H:i') }}</div>
+                <div class="text-sm font-medium text-font">{{ auth()->user()->tenant->trade_name }}</div>
+                <div class="text-xs text-font/50">Última atualização: {{ now()->format('d/m/Y H:i') }}</div>
             </div>
         </div>
     </x-slot>
+    
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Flash Messages -->
             @if (session('success'))
                 <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
-                    class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center space-x-2">
-                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="mb-6 bg-success/5 border border-success/20 text-success px-4 py-3 rounded-lg flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                     <span>{{ session('success') }}</span>
@@ -37,25 +38,24 @@
 
             @if (session('error'))
                 <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
-                    class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center space-x-2">
-                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
+                    class="mb-6 bg-danger/5 border border-danger/20 text-danger px-4 py-3 rounded-lg flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                     <span>{{ session('error') }}</span>
                 </div>
             @endif
 
             <!-- Tabs Container -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-light overflow-hidden shadow-sm sm:rounded-lg">
                 <div x-data="adminSettings()" class="min-h-screen">
                     <!-- Tab Navigation -->
-                    <div class="border-b border-gray-200 bg-gray-50">
+                    <div class="border-b border-font/10 bg-bg">
                         <nav class="flex space-x-8 px-6" aria-label="Tabs">
                             <!-- Tab: Usuários -->
                             <button @click="activeTab = 'users'"
                                 :class="activeTab === 'users' ? 'border-primary text-primary' :
-                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    'border-transparent text-font/50 hover:text-font hover:border-font/30'"
                                 class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -64,7 +64,7 @@
                                 </svg>
                                 <span>Usuários</span>
                                 <span
-                                    :class="activeTab === 'users' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'"
+                                    :class="activeTab === 'users' ? 'bg-primary text-light' : 'bg-font/10 text-font/60'"
                                     class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded-full">
                                     {{ $users->count() }}
                                 </span>
@@ -73,7 +73,7 @@
                             <!-- Tab: Funções -->
                             <button @click="activeTab = 'roles'"
                                 :class="activeTab === 'roles' ? 'border-primary text-primary' :
-                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    'border-transparent text-font/50 hover:text-font hover:border-font/30'"
                                 class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -82,7 +82,7 @@
                                 </svg>
                                 <span>Funções</span>
                                 <span
-                                    :class="activeTab === 'roles' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'"
+                                    :class="activeTab === 'roles' ? 'bg-primary text-light' : 'bg-font/10 text-font/60'"
                                     class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded-full">
                                     {{ $roles->count() }}
                                 </span>
@@ -91,7 +91,7 @@
                             <!-- Tab: Permissões -->
                             <button @click="activeTab = 'permissions'"
                                 :class="activeTab === 'permissions' ? 'border-primary text-primary' :
-                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    'border-transparent text-font/50 hover:text-font hover:border-font/30'"
                                 class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -100,7 +100,7 @@
                                 </svg>
                                 <span>Permissões</span>
                                 <span
-                                    :class="activeTab === 'permissions' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'"
+                                    :class="activeTab === 'permissions' ? 'bg-primary text-light' : 'bg-font/10 text-font/60'"
                                     class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded-full">
                                     {{ $permissions->flatten()->count() }}
                                 </span>

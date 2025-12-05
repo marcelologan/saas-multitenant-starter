@@ -4,7 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name') }} - Gestão Inteligente para Indústria Têxtil</title>
+    <title>{{ config('app_branding.meta.title') }}</title>
+    <meta name="description" content="{{ config('app_branding.meta.description') }}">
+    <meta name="keywords" content="{{ config('app_branding.meta.keywords') }}">
+    <meta name="author" content="{{ config('app_branding.meta.author') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -27,10 +30,12 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Navbar - Logo -->
                 <div class="flex items-center space-x-3">
-                    <img src="{{ asset('assets/img/fm_ico.png') }}" alt="Fashion Manager" class="w-10 h-10">
+                    <img src="{{ asset(config('app_branding.logos.icon')) }}"
+                        alt="{{ config('app_branding.logos.alt') }}"
+                        class="{{ config('app_branding.logos.sizes.navbar_full') }}">
                     <div>
-                        <h1 class="text-xl font-bold text-font">Fashion Manager</h1>
-                        <p class="text-xs text-font/70">Gestão Têxtil</p>
+                        <h1 class="text-xl font-bold text-font">{{ config('app_branding.app.name') }}</h1>
+                        <p class="text-xs text-font/70">{{ config('app_branding.app.tagline') }}</p>
                     </div>
                 </div>
 
@@ -52,12 +57,12 @@
                             </a>
                         @else
                             <a href="{{ route('login') }}" class="text-font hover:text-primary font-medium">
-                                Entrar
+                                {{ config('app_branding.cta.login') }}
                             </a>
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
                                     class="bg-gradient-primary text-light px-6 py-2.5 rounded-xl font-semibold text-sm hover:opacity-90 transition-all">
-                                    Começar Grátis
+                                    {{ config('app_branding.cta.register_free') }}
                                 </a>
                             @endif
                         @endauth
@@ -72,24 +77,23 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="text-5xl md:text-7xl font-bold text-light mb-6 animate-fade-in-up">
-                    Revolucione sua
+                    {{ str_replace(config('app_branding.hero.title_highlight'), '', config('app_branding.hero.title')) }}
                     <span class="block bg-gradient-secondary bg-clip-text text-transparent">
-                        Produção Têxtil
+                        {{ config('app_branding.hero.title_highlight') }}
                     </span>
                 </h1>
                 <p
                     class="text-xl md:text-2xl text-light/90 mb-8 max-w-3xl mx-auto animate-fade-in-up animate-delay-100">
-                    Sistema completo para gestão de produção, controle de qualidade e otimização de processos na
-                    indústria do vestuário
+                    {{ config('app_branding.hero.subtitle') }}
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-200">
                     <a href="{{ route('register') }}"
                         class="bg-light text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-bg transition-all transform hover:scale-105 shadow-xl">
-                        Teste Grátis por 30 Dias
+                        {{ config('app_branding.hero.cta_primary') }}
                     </a>
                     <a href="#demo"
                         class="bg-light/20 text-light px-8 py-4 rounded-xl font-bold text-lg hover:bg-light/30 transition-all border border-light/30">
-                        Ver Demonstração
+                        {{ config('app_branding.hero.cta_secondary') }}
                     </a>
                 </div>
             </div>
@@ -100,22 +104,12 @@
     <section class="bg-light py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary mb-2">500+</div>
-                    <div class="text-font/70">Empresas Atendidas</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary mb-2">2M+</div>
-                    <div class="text-font/70">Peças Produzidas</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary mb-2">35%</div>
-                    <div class="text-font/70">Aumento Eficiência</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-primary mb-2">99.9%</div>
-                    <div class="text-font/70">Uptime Sistema</div>
-                </div>
+                @foreach (config('app_branding.stats') as $stat)
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-primary mb-2">{{ $stat['number'] }}</div>
+                        <div class="text-font/70">{{ $stat['label'] }}</div>
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -125,11 +119,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-font mb-4">
-                    Funcionalidades Específicas para
-                    <span class="text-primary">Indústria Têxtil</span>
+                    {{ str_replace(config('app_branding.sections.features.title_highlight'), '', config('app_branding.sections.features.title')) }}
+                    <span class="text-primary">{{ config('app_branding.sections.features.title_highlight') }}</span>
                 </h2>
                 <p class="text-xl text-font/70 max-w-3xl mx-auto">
-                    Desenvolvido especificamente para as necessidades da produção de vestuário
+                    {{ str_replace('vestuário', config('app_branding.app.segment'), config('app_branding.sections.features.subtitle')) }}
                 </p>
             </div>
 
@@ -227,11 +221,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-font mb-4">
-                    Planos que Crescem com seu
-                    <span class="text-primary">Negócio</span>
+                    {{ str_replace(config('app_branding.sections.pricing.title_highlight'), '', config('app_branding.sections.pricing.title')) }}
+                    <span class="text-primary">{{ config('app_branding.sections.pricing.title_highlight') }}</span>
                 </h2>
                 <p class="text-xl text-font/70 max-w-3xl mx-auto">
-                    Escolha o plano ideal para o tamanho da sua operação
+                    {{ config('app_branding.sections.pricing.subtitle') }}
                 </p>
             </div>
 
@@ -239,11 +233,15 @@
                 @php
                     $plans = [
                         [
-                            'name' => 'Starter',
+                            'name' => config('app_branding.plans.starter.name'),
                             'slug' => 'starter',
-                            'description' => 'Ideal para pequenas confecções',
-                            'price' => '0.00',
-                            'period' => '30 dias grátis',
+                            'description' => str_replace(
+                                'confecções',
+                                config('app_branding.app.business_type_plural'),
+                                config('app_branding.plans.starter.description'),
+                            ),
+                            'price' => config('app_branding.plans.starter.price'),
+                            'period' => config('app_branding.plans.starter.period'),
                             'features' => [
                                 'Até 50 produtos/mês',
                                 'Controle básico de estoque',
@@ -252,14 +250,14 @@
                                 '1 usuário',
                             ],
                             'popular' => false,
-                            'cta' => 'Começar Grátis',
+                            'cta' => config('app_branding.plans.starter.cta'),
                         ],
                         [
-                            'name' => 'Professional',
+                            'name' => config('app_branding.plans.professional.name'),
                             'slug' => 'professional',
-                            'description' => 'Para empresas em crescimento',
-                            'price' => '149.90',
-                            'period' => 'mês',
+                            'description' => config('app_branding.plans.professional.description'),
+                            'price' => config('app_branding.plans.professional.price'),
+                            'period' => config('app_branding.plans.professional.period'),
                             'features' => [
                                 'Até 500 produtos/mês',
                                 'Gestão completa de produção',
@@ -269,14 +267,14 @@
                                 'Suporte prioritário',
                             ],
                             'popular' => true,
-                            'cta' => 'Mais Popular',
+                            'cta' => config('app_branding.plans.professional.cta'),
                         ],
                         [
-                            'name' => 'Business',
+                            'name' => config('app_branding.plans.business.name'),
                             'slug' => 'business',
-                            'description' => 'Para médias empresas',
-                            'price' => '299.90',
-                            'period' => 'mês',
+                            'description' => config('app_branding.plans.business.description'),
+                            'price' => config('app_branding.plans.business.price'),
+                            'period' => config('app_branding.plans.business.period'),
                             'features' => [
                                 'Até 2000 produtos/mês',
                                 'Múltiplas linhas de produção',
@@ -286,14 +284,14 @@
                                 'Suporte telefônico',
                             ],
                             'popular' => false,
-                            'cta' => 'Escolher Plano',
+                            'cta' => config('app_branding.plans.business.cta'),
                         ],
                         [
-                            'name' => 'Enterprise',
+                            'name' => config('app_branding.plans.enterprise.name'),
                             'slug' => 'enterprise',
-                            'description' => 'Solução completa',
-                            'price' => 'Personalizado',
-                            'period' => '',
+                            'description' => config('app_branding.plans.enterprise.description'),
+                            'price' => config('app_branding.plans.enterprise.price'),
+                            'period' => config('app_branding.plans.enterprise.period'),
                             'features' => [
                                 'Produção ilimitada',
                                 'Customizações específicas',
@@ -303,7 +301,7 @@
                                 'Suporte 24/7',
                             ],
                             'popular' => false,
-                            'cta' => 'Falar com Vendas',
+                            'cta' => config('app_branding.plans.enterprise.cta'),
                         ],
                     ];
                 @endphp
@@ -371,14 +369,14 @@
     <section class="bg-gradient-primary py-20">
         <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-10">
             <h2 class="text-4xl md:text-5xl font-bold mb-6 text-light">
-                Pronto para Revolucionar sua Produção?
+                {{ config('app_branding.sections.cta.title') }}
             </h2>
             <p class="text-xl text-light/90 mb-8">
-                Junte-se a centenas de empresas que já otimizaram seus processos
+                {{ config('app_branding.sections.cta.subtitle') }}
             </p>
             <a href="{{ route('register') }}"
                 class="bg-light text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-bg transition-all transform hover:scale-105 shadow-xl inline-block">
-                Começar Teste Grátis Agora
+                {{ config('app_branding.sections.cta.button') }}
             </a>
         </div>
     </section>
@@ -389,41 +387,45 @@
             <div class="grid md:grid-cols-4 gap-8">
                 <div class="md:col-span-2">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="{{ asset('assets/img/fm_ico.png') }}" alt="Fashion Manager" class="w-10 h-10">
+                        <img src="{{ asset(config('app_branding.logos.icon')) }}"
+                            alt="{{ config('app_branding.logos.alt') }}"
+                            class="{{ config('app_branding.logos.sizes.footer') }}">
                         <div>
-                            <h3 class="text-xl font-bold text-light">Fashion Manager</h3>
-                            <p class="text-light/70">Gestão Têxtil Inteligente</p>
+                            <h3 class="text-xl font-bold text-light">{{ config('app_branding.app.name') }}</h3>
+                            <p class="text-light/70">{{ config('app_branding.app.description') }}</p>
                         </div>
                     </div>
                     <p class="text-light/70 max-w-md">
-                        Transformamos a gestão de produção têxtil com tecnologia de ponta e foco na eficiência
-                        operacional.
+                        {{ config('app_branding.footer.description') }}
                     </p>
                 </div>
 
                 <div>
-                    <h4 class="font-semibold mb-4 text-light">Produto</h4>
+                    <h4 class="font-semibold mb-4 text-light">{{ config('app_branding.footer.links.product.title') }}
+                    </h4>
                     <ul class="space-y-2 text-light/70">
-                        <li><a href="#features" class="hover:text-light transition-colors">Funcionalidades</a></li>
-                        <li><a href="#pricing" class="hover:text-light transition-colors">Preços</a></li>
-                        <li><a href="#" class="hover:text-light transition-colors">Integrações</a></li>
-                        <li><a href="#" class="hover:text-light transition-colors">API</a></li>
+                        @foreach (config('app_branding.footer.links.product.items') as $label => $url)
+                            <li><a href="{{ $url }}"
+                                    class="hover:text-light transition-colors">{{ $label }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="font-semibold mb-4 text-light">Suporte</h4>
+                    <h4 class="font-semibold mb-4 text-light">{{ config('app_branding.footer.links.support.title') }}
+                    </h4>
                     <ul class="space-y-2 text-light/70">
-                        <li><a href="#" class="hover:text-light transition-colors">Central de Ajuda</a></li>
-                        <li><a href="#" class="hover:text-light transition-colors">Documentação</a></li>
-                        <li><a href="#contact" class="hover:text-light transition-colors">Contato</a></li>
-                        <li><a href="#" class="hover:text-light transition-colors">Status</a></li>
+                        @foreach (config('app_branding.footer.links.support.items') as $label => $url)
+                            <li><a href="{{ $url }}"
+                                    class="hover:text-light transition-colors">{{ $label }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-light/20 mt-12 pt-8 text-center text-light/70">
-                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. Todos os direitos reservados.</p>
+                <p>&copy; {{ date('Y') }} {{ config('app_branding.app.name') }}.
+                    {{ config('app_branding.footer.copyright') }}</p>
             </div>
         </div>
     </footer>

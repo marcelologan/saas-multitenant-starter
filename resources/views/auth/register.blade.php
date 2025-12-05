@@ -16,6 +16,7 @@
             {{ session('error') }}
         </div>
     @endif
+
     <div class="min-h-screen bg-gray-50">
         <!-- Header Corrigido -->
         <div class="bg-white shadow-sm border-b border-gray-200">
@@ -23,19 +24,21 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo Corrigida -->
                     <div class="flex items-center space-x-3">
-                        <img src="{{ asset('assets/img/fm_ico.png') }}" alt="Fashion Manager" class="w-8 h-8">
+                        <img src="{{ asset(config('app_branding.logos.icon')) }}"
+                            alt="{{ config('app_branding.logos.alt') }}"
+                            class="{{ config('app_branding.logos.sizes.navbar') }}">
                         <div>
-                            <span class="text-xl font-bold text-gray-900">Fashion Manager</span>
-                            <p class="text-xs text-gray-500 -mt-1">Gestão Têxtil</p>
+                            <span class="text-xl font-bold text-gray-900">{{ config('app_branding.app.name') }}</span>
+                            <p class="text-xs text-gray-500 -mt-1">{{ config('app_branding.app.tagline') }}</p>
                         </div>
                     </div>
 
                     <!-- Link para Login -->
                     <div class="text-sm text-gray-600">
-                        Já tem uma conta?
+                        {{ config('app_branding.auth.register.already_have_account') }}
                         <a href="{{ route('login') }}"
                             class="text-primary hover:text-primary-hover font-semibold transition-colors">
-                            Fazer login
+                            {{ config('app_branding.cta.login_link') }}
                         </a>
                     </div>
                 </div>
@@ -73,8 +76,11 @@
 
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <h1 class="text-4xl font-bold text-gray-900 mb-4">Crie sua conta gratuita</h1>
-                    <p class="text-xl text-gray-600">Comece a revolucionar sua produção têxtil hoje mesmo</p>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ config('app_branding.auth.register.title') }}
+                    </h1>
+                    <p class="text-xl text-gray-600">
+                        {{ str_replace('têxtil', config('app_branding.app.industry_adjective'), config('app_branding.auth.register.subtitle')) }}
+                    </p>
                 </div>
 
                 <!-- Main Form Card -->
@@ -94,8 +100,11 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-2xl font-bold text-gray-900">Dados da Empresa</h2>
-                                    <p class="text-gray-600">Informações básicas da sua confecção</p>
+                                    <h2 class="text-2xl font-bold text-gray-900">
+                                        {{ config('app_branding.auth.register.company_section.title') }}</h2>
+                                    <p class="text-gray-600">
+                                        {{ str_replace('confecção', config('app_branding.app.business_type'), config('app_branding.auth.register.company_section.subtitle')) }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -107,7 +116,7 @@
                                     <input id="company_name" name="company_name" type="text" required
                                         value="{{ old('company_name') }}"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="Confecções Exemplo LTDA">
+                                        placeholder="{{ config('app_branding.placeholders.company_name') }}">
                                     <x-input-error :messages="$errors->get('company_name')" class="mt-2" />
                                 </div>
 
@@ -118,7 +127,7 @@
                                     <input id="trade_name" name="trade_name" type="text"
                                         value="{{ old('trade_name') }}"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="Confecções Exemplo">
+                                        placeholder="{{ config('app_branding.placeholders.trade_name') }}">
                                     <x-input-error :messages="$errors->get('trade_name')" class="mt-2" />
                                 </div>
 
@@ -129,7 +138,7 @@
                                     <input id="cnpj" name="cnpj" type="text" required
                                         value="{{ old('cnpj') }}"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="00.000.000/0000-00" maxlength="18">
+                                        placeholder="{{ config('app_branding.placeholders.cnpj') }}" maxlength="18">
                                     <x-input-error :messages="$errors->get('cnpj')" class="mt-2" />
                                 </div>
 
@@ -140,7 +149,7 @@
                                     <input id="phone" name="phone" type="text" required
                                         value="{{ old('phone') }}"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="(11) 99999-9999">
+                                        placeholder="{{ config('app_branding.placeholders.phone') }}">
                                     <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                 </div>
 
@@ -150,7 +159,7 @@
                                     </label>
                                     <input id="address" name="address" type="text" value="{{ old('address') }}"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="Rua das Confecções, 123 - Centro - São Paulo/SP">
+                                        placeholder="{{ config('app_branding.placeholders.address') }}">
                                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                                 </div>
                             </div>
@@ -171,8 +180,10 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-2xl font-bold text-gray-900">Administrador Principal</h2>
-                                    <p class="text-gray-600">Dados do responsável pela conta</p>
+                                    <h2 class="text-2xl font-bold text-gray-900">
+                                        {{ config('app_branding.auth.register.admin_section.title') }}</h2>
+                                    <p class="text-gray-600">
+                                        {{ config('app_branding.auth.register.admin_section.subtitle') }}</p>
                                 </div>
                             </div>
 
@@ -184,7 +195,7 @@
                                     <input id="name" name="name" type="text" required
                                         value="{{ old('name') }}"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="João Silva">
+                                        placeholder="{{ config('app_branding.placeholders.admin_name') }}">
                                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                 </div>
 
@@ -195,7 +206,7 @@
                                     <input id="email" name="email" type="email" required
                                         value="{{ old('email') }}"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="joao@confeccoes.com">
+                                        placeholder="{{ config('app_branding.placeholders.admin_email') }}">
                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                 </div>
 
@@ -205,7 +216,7 @@
                                     </label>
                                     <input id="password" name="password" type="password" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="Mínimo 8 caracteres">
+                                        placeholder="{{ config('app_branding.placeholders.password') }}">
                                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                 </div>
 
@@ -217,7 +228,7 @@
                                     <input id="password_confirmation" name="password_confirmation" type="password"
                                         required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                                        placeholder="Digite a senha novamente">
+                                        placeholder="{{ config('app_branding.placeholders.password_confirm') }}">
                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                 </div>
                             </div>
@@ -238,8 +249,10 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-2xl font-bold text-gray-900">Escolha seu Plano</h2>
-                                    <p class="text-gray-600">Comece com 30 dias grátis em qualquer plano</p>
+                                    <h2 class="text-2xl font-bold text-gray-900">
+                                        {{ config('app_branding.auth.register.plan_section.title') }}</h2>
+                                    <p class="text-gray-600">
+                                        {{ config('app_branding.auth.register.plan_section.subtitle') }}</p>
                                 </div>
                             </div>
 
@@ -248,27 +261,27 @@
                                     $plans = [
                                         [
                                             'id' => 1,
-                                            'name' => 'Starter',
-                                            'price' => '0.00',
-                                            'period' => '30 dias grátis',
+                                            'name' => config('app_branding.plans.starter.name'),
+                                            'price' => config('app_branding.plans.starter.price'),
+                                            'period' => config('app_branding.plans.starter.period'),
                                             'slug' => 'starter',
                                             'features' => ['Até 50 produtos/mês', 'Controle básico', '1 usuário'],
                                             'popular' => false,
                                         ],
                                         [
                                             'id' => 2,
-                                            'name' => 'Professional',
-                                            'price' => '149.90',
-                                            'period' => 'mês',
+                                            'name' => config('app_branding.plans.professional.name'),
+                                            'price' => config('app_branding.plans.professional.price'),
+                                            'period' => config('app_branding.plans.professional.period'),
                                             'slug' => 'professional',
                                             'features' => ['Até 500 produtos/mês', 'Gestão completa', '5 usuários'],
                                             'popular' => true,
                                         ],
                                         [
                                             'id' => 3,
-                                            'name' => 'Business',
-                                            'price' => '299.90',
-                                            'period' => 'mês',
+                                            'name' => config('app_branding.plans.business.name'),
+                                            'price' => config('app_branding.plans.business.price'),
+                                            'period' => config('app_branding.plans.business.period'),
                                             'slug' => 'business',
                                             'features' => ['Até 2000 produtos/mês', 'Múltiplas linhas', '15 usuários'],
                                             'popular' => false,
@@ -325,12 +338,12 @@
                             <input id="terms" name="terms" type="checkbox" required
                                 class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
                             <label for="terms" class="ml-3 text-sm text-gray-600">
-                                Eu concordo com os
-                                <a href="#" class="text-primary hover:text-primary-hover font-semibold">Termos
-                                    de Uso</a>
+                                {{ config('app_branding.auth.register.terms_text') }}
+                                <a href="#"
+                                    class="text-primary hover:text-primary-hover font-semibold">{{ config('app_branding.auth.register.terms_link') }}</a>
                                 e
-                                <a href="#" class="text-primary hover:text-primary-hover font-semibold">Política
-                                    de Privacidade</a>
+                                <a href="#"
+                                    class="text-primary hover:text-primary-hover font-semibold">{{ config('app_branding.auth.register.privacy_link') }}</a>
                             </label>
                         </div>
 
@@ -338,10 +351,10 @@
                         <div class="pt-6">
                             <button type="submit"
                                 class="w-full btn-gradient py-4 px-6 rounded-xl text-white font-bold text-lg transition-all transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                                Criar Conta Gratuita
+                                {{ config('app_branding.cta.register') }}
                             </button>
                             <p class="mt-4 text-center text-sm text-gray-500">
-                                🔒 Seus dados estão seguros e protegidos
+                                {{ config('app_branding.auth.register.trust_message') }}
                             </p>
                         </div>
                     </form>
@@ -349,25 +362,14 @@
 
                 <!-- Trust Signals -->
                 <div class="mt-12 text-center">
-                    <p class="text-gray-600 mb-6">Mais de 500 empresas já confiam no Fashion Manager</p>
+                    <p class="text-gray-600 mb-6">{{ config('app_branding.hero.trust_message') }}</p>
                     <div class="flex justify-center items-center space-x-8 opacity-60">
-                        <!-- Logos de clientes fictícios -->
-                        <div
-                            class="w-24 h-12 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-gray-500">
-                            Cliente 1
-                        </div>
-                        <div
-                            class="w-24 h-12 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-gray-500">
-                            Cliente 2
-                        </div>
-                        <div
-                            class="w-24 h-12 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-gray-500">
-                            Cliente 3
-                        </div>
-                        <div
-                            class="w-24 h-12 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-gray-500">
-                            Cliente 4
-                        </div>
+                        @foreach (config('app_branding.clients') as $client)
+                            <div
+                                class="w-24 h-12 bg-gray-200 rounded flex items-center justify-center text-xs font-semibold text-gray-500">
+                                {{ $client['name'] }}
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -403,15 +405,14 @@
 
             if (scrollPercent > 20) {
                 // Ativar step 2
-                document.querySelector('.step-2').classList.add('active');
+                document.querySelector('.step-2')?.classList.add('active');
             }
 
             if (scrollPercent > 60) {
                 // Ativar step 3
-                document.querySelector('.step-3').classList.add('active');
+                document.querySelector('.step-3')?.classList.add('active');
             }
         });
-
 
         document.addEventListener('DOMContentLoaded', function() {
             // Verificar se há erros de elementos JS

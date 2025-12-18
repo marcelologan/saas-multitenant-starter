@@ -1,25 +1,70 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="min-h-screen flex items-center justify-center bg-bg py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <!-- Logo -->
+            <div class="text-center">
+                <img src="{{ asset(config('app_branding.logos.full')) }}" 
+                     alt="{{ config('app_branding.logos.alt') }}" 
+                     class="{{ config('app_branding.logos.sizes.login') }} mx-auto mb-6">
+                <h2 class="text-3xl font-bold text-font">Esqueceu sua senha?</h2>
+                <p class="mt-2 text-sm text-font-secondary">
+                    Não se preocupe! Digite seu email e enviaremos um link para redefinir sua senha.
+                </p>
+            </div>
+
+            <!-- Session Status -->
+            <x-auth-session-status class="mb-4" :status="session('status')" />
+
+            <!-- Form Card -->
+            <div class="bg-light rounded-2xl shadow-xl p-8 border border-neutral-300">
+                <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
+                    @csrf
+
+                    <!-- Email Address -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-font mb-2">
+                            Email
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-font-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                </svg>
+                            </div>
+                            <input id="email" name="email" type="email" autocomplete="email" required autofocus
+                                value="{{ old('email') }}"
+                                class="w-full pl-10 pr-4 py-3 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors text-font placeholder-font-secondary bg-light"
+                                placeholder="{{ config('app_branding.placeholders.login_email') }}">
+                        </div>
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div>
+                        <button type="submit"
+                            class="w-full bg-gradient-primary py-3 px-4 rounded-xl text-light font-semibold text-lg transition-all transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:opacity-90">
+                            Enviar Link de Redefinição
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Back to Login -->
+                <div class="mt-6 text-center">
+                    <a href="{{ route('login') }}" class="text-primary hover:text-primary-hover font-semibold transition-colors text-sm">
+                        ← Voltar para o login
+                    </a>
+                </div>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="text-center">
+                <p class="text-xs text-font-secondary">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    {{ config('app_branding.auth.login.security_notice') }}
+                </p>
+            </div>
+        </div>
     </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
 </x-guest-layout>
